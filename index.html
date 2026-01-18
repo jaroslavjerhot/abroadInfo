@@ -214,8 +214,8 @@ function setDefaultQueryFromUrl() {
     document.getElementById('queryInput').value = q ? decodeURIComponent(q) : ''
 }
 function updateTitleFromInput() {
-    const text = document.getElementById('queryInput').value.trim();
-    document.title = 'aInfo' + (text ? ': ' + text : '');
+    const text = document.getElementById('queryInput').value.trim() ;
+    document.title = 'aInfo' + (text ? ': ' + text : 'Česko');
 }
 /* ===============================
    SEARCH LOGIC
