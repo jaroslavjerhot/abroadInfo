@@ -138,30 +138,58 @@ function setYear(btn, year) {
     runSearch()
 }
 
-function runSearch() {
-    const text = document.getElementById('queryInput').value.trim()
-    if (!text) {
-        alert('Input some text for search.');
-        return}
+async function runSearch() {
+    const input = document.getElementById('queryInput')
+    const text = input.value.trim()
+    if (!text) return
 
-    let query = text
-    query += ' before:' + yearLimit
+    try {
+        const translated = await translateText(text, targetLang)
+        openGoogleSearch(translated)
+    } catch (e) {
+        // fallback → original text
+        openGoogleSearch(text)
+    }
+}
 
-    if (document.getElementById('excludeSocial').checked) {
-        query += ' -site:facebook.com -site:instagram.com -site:tiktok.com -site:twitter.com -site:x.com'
+async function translateText(text, lang) {
+    if (lang === 'cs') return text   // default = no translation
+
+    const url =
+        'https://api.mymemory.translated.net/get' +
+        '?q=' + encodeURIComponent(text) +
+        '&langpair=auto|' + lang
+
+    const response = await fetch(url)
+    const data = await response.json()
+
+    if (!data.responseData || !data.responseData.translatedText) {
+        throw 'Translation failed'
     }
 
-    const translateUrl =
-        'https://translate.google.com/translate?' +
-        'sl=auto' +
-        '&tl=' + targetLang +
-        '&u=' + encodeURIComponent(
-            'https://www.google.com/search?q=' + encodeURIComponent(query)
-        )
+    return data.responseData.translatedText
+}
 
-    window.open(translateUrl, '_blank')
+function openGoogleSearch(queryText) {
+    let query = queryText + ' before:' + yearLimit
+
+    if (document.getElementById('excludeSocial').checked) {
+        query +=
+            ' -site:facebook.com' +
+            ' -site:instagram.com' +
+            ' -site:tiktok.com' +
+            ' -site:twitter.com' +
+            ' -site:x.com'
+    }
+
+    const url =
+        'https://www.google.com/search?q=' +
+        encodeURIComponent(query)
+
+    window.open(url, '_blank')
 }
 </script>
+
 
 </body>
 </html>
