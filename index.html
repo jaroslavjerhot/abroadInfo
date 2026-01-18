@@ -55,6 +55,7 @@
                     <div class='mb-3'>
                         <input id='queryInput'
                                type='text'
+                               value='inflace'
                                class='form-control form-control-lg'
                                placeholder='Enter text to search...'>
                     </div>
@@ -158,7 +159,7 @@ async function translateText(text, lang) {
     const url =
         'https://api.mymemory.translated.net/get' +
         '?q=' + encodeURIComponent(text) +
-        '&langpair=auto|' + lang
+        '&langpair=cs|' + lang
 
     const response = await fetch(url)
     const data = await response.json()
