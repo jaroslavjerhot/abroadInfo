@@ -11,6 +11,9 @@
             color: #ffffff; /* white text */
             padding-bottom: env(safe-area-inset-bottom);
         }
+        h1, h2, h3, h4, h5, h6, strong, label {
+            color: #ffffff !important;
+        }
         .card {
             background-color: #1a1a1a;
             border: none;
@@ -131,10 +134,13 @@ const COUNTRY_CONFIG = {
 
 const currentYear = new Date().getFullYear()
 const YEAR_RANGES = [
-    {label: '<2015', start: null, end: 2015},
-    {label: '2015-2020', start: 2015, end: 2020},
-    {label: '2020-' + currentYear, start: 2020, end: currentYear}
-]
+    { label: '<2009', start: null, end: 2009 },
+    { label: '2010-2014', start: 2010, end: 2014 },
+    { label: '2015-2018', start: 2015, end: 2018 },
+    { label: '2019-2021', start: 2019, end: 2021 },
+    { label: '2022-' + (currentYear-1), start: 2022, end: currentYear - 1 },
+    { label: String(currentYear), start: currentYear, end: currentYear }
+];
 
 let selectedCountry = localStorage.getItem('lastCountry') || 'CZ'
 let selectedYearRangeIndex = localStorage.getItem('lastYearIndex') ? Number(localStorage.getItem('lastYearIndex')) : 2 // default last = currentYear
