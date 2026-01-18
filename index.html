@@ -81,7 +81,7 @@
 
                     <!-- INPUT -->
                     <div class='mb-3'>
-                        <input id='queryInput' type='text' class='form-control form-control-lg' placeholder='Enter search text...'>
+                        <input id='queryInput' type='text' class='form-control form-control-lg' placeholder='Enter search text...' value='Česko'>
                     </div>
 
                     <!-- COUNTRIES -->
@@ -211,9 +211,7 @@ function setYear(btn, index) {
 function setDefaultQueryFromUrl() {
     const params = new URLSearchParams(window.location.search)
     const q = params.get('q')
-    q = q ? decodeURIComponent(q) : 'Česko'
-    document.getElementById('queryInput').value = q 
-    alert(q)
+    document.getElementById('queryInput').value = q ? decodeURIComponent(q) : ''
 }
 function updateTitleFromInput() {
     const text = document.getElementById('queryInput').value.trim() ;
