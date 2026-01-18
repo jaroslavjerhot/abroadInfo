@@ -49,7 +49,7 @@
             <div class='card shadow-sm'>
                 <div class='card-body'>
 
-                    <h4 class='mb-3'>Google Search Builder</h4>
+                    <h4 class='mb-3'>The more o's, the more Google</h4>
 
                     <!-- TEXT INPUT -->
                     <div class='mb-3'>
@@ -140,7 +140,9 @@ function setYear(btn, year) {
 
 function runSearch() {
     const text = document.getElementById('queryInput').value.trim()
-    if (!text) return
+    if (!text) {
+        alert('Input some text for search.');
+        return}
 
     let query = text
     query += ' before:' + yearLimit
