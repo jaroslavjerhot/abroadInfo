@@ -14,6 +14,19 @@
         h1, h2, h3, h4, h5, h6, strong, label {
             color: #ffffff !important;
         }
+        .header {
+          display: flex;
+          justify-content: center; /* horizontal */
+          align-items: center;     /* vertical (if header has height) */
+          padding: 16px 0;
+        }
+
+        .logo {
+          width: 50vw;       /* half of mobile screen */
+          max-width: 320px;
+          min-width: 160px;
+        }
+
         .logo {
           width: 50vw;        /* half of viewport width */
           max-width: 320px;   /* optional cap */
@@ -82,8 +95,12 @@
         <div class='col-lg-8'>
             <div class='card shadow-sm'>
                 <div class='card-body'>
+                    <header class="header">
+                      <img src="LogoWhite.png" class="logo" alt="abroadInfo">
+                    </header>
+
                     <h3 class='mb-4 text-center'>abroadInfo</h3>
-                    <img src="logo.svg" class="logo" alt="abroadInfo logo">
+                    
 
                     <!-- INPUT -->
                     <div class='mb-3'>
