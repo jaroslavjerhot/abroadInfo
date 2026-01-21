@@ -47,7 +47,8 @@ function updateTitleFromInput() {
 }
 
 queryInput.addEventListener('input', () => {
-    dctTrans = {}   // clear dictionary
+    dctTrans = {}  // clear dictionary
+    dctTrans[dctDefaultForm.sLang] = queryInput.value.trim(); // reset default language
 })
 
 // nastavi country config
@@ -150,23 +151,25 @@ async function runSearch() {
     //document.title = '1: ' + text;
     if(!text) return
     const lang = dctCountryConfig[selectedCountry].lang
-
+    //alert('Searching for: ' + text + '\nLanguage: ' + lang)
     if (!(lang in dctTrans)) {
         try {
             const translated = await translateText(text, lang);
             // Prompt the user to edit/confirm the search query
-            let finalText = prompt("Modify the search query if needed:", translated);
+            let finalText = prompt("Modify the translated text if needed:", translated);
             if (!finalText) return;
             dctTrans[lang] = finalText;
             openGoogleSearch(finalText)
         } catch {
             openGoogleSearch(text)
         }
-    } 
+    } else {
+        openGoogleSearch(dctTrans[lang])
+    }
 }
 
 async function translateText(text, lang) {
-    if(lang === sBaseLang) return text
+    if(lang === dctDefaultForm.sLang) return text
     const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=cs|' + lang
     const response = await fetch(url)
     const data = await response.json()
@@ -177,19 +180,22 @@ async function translateText(text, lang) {
 function openGoogleSearch(queryText) {
     let query = queryText
 
-    const range = YEAR_RANGES[selectedYearRangeIndex]
+    //const range = YEAR_RANGES[selectedYearRangeIndex]
     //let tbs = 'cdr:1'
     //if(range.start) tbs += ',cd_min:' + range.start
     //if(range.end) tbs += ',cd_max:' + range.end
-    let tbs = range.tbs
+    let tbs = YEAR_RANGES[selectedYearRangeIndex].tbs
 
+    if(document.getElementById('imagesOnly').checked) {
+        query += '&tbm=isch'
+    }
+    if(dctCountryConfig[selectedCountry].lang !='cs') {
+        query += ' -site:.cz'
+    }
     if(document.getElementById('excludeSocial').checked) {
         query += ' -site:facebook.com -site:instagram.com -site:youtube.com -site:x.com -site:wikipedia.org -site:reddit.com'
     }
-    query += ' -site:.cz'
     
-    
-
     const cfg = dctCountryConfig[selectedCountry]
     const url = 'https://www.google.com/search?q=' + encodeURIComponent(query) +
                 '&hl=' + cfg.lang +
