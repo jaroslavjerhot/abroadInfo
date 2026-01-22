@@ -116,6 +116,7 @@ const lstTimePeriods = [
     { label: 'last week', start: currentYear, end: currentYear, tbs: 'qdr:w' },
     { label: 'last month', start: currentYear, end: currentYear, tbs: 'qdr:m' },
     { label: 'last year', start: currentYear, end: currentYear, tbs: 'qdr:y' },
+    { label: 'last 3yrs', start: currentYear, end: currentYear, tbs: `cdr:1,cd_min:1/1/${currentYear - 3}` },
 ];
 
 for (let y = currentYear; y > currentYear - 10; y--) {
