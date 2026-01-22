@@ -45,11 +45,13 @@
                     <div class='mb-3'>
                         <strong>Time limit or event</strong>
                         <div id='yearButtons' class='d-flex flex-wrap gap-2 mt-2'></div>
-                        <br>
+                        
+                        <!-- <br>
                         <select id="eventSelect" class="form-select form-select-dark">
                             <option value="">— Select event —</option>
                         </select>
                         <br>
+                        -->
                     </div>
                         
                     <!-- EXCLUDE -->
@@ -62,20 +64,28 @@
                         <input class='form-check-input' type='checkbox' id='imagesOnly' unchecked>
                         <label class='form-check-label' for='imagesOnly'>Show only images</label>
                     </div>
+                    <!-- presentations -->
+                    <div class='form-check form-switch mb-4'>
+                        <input class='form-check-input' type='checkbox' id='presentationsOnly' unchecked>
+                        <label class='form-check-label' for='presentationsOnly'>Show only presentations</label>
+                    </div>
 
                 </div>
             </div>
 
             <!-- MOBILE SEARCH -->
             <div class='mobile-search d-md-none'>
-                <button class='btn btn-success w-100 btn-lg' onclick='runSearch()'>Search</button>
+                <button class='btn btn-success w-100 btn-lg' id='search-mobile' onclick='runSearch()'>Create search query</button>
             </div>
 
             <!-- DESKTOP SEARCH -->
             <div class='text-end mt-3 d-none d-md-block'>
-                <button class='btn btn-success btn-lg' onclick='runSearch()'>Search</button>
+                <button class='btn btn-success btn-lg' id='create-query' onclick='runSearch()'>Create search query</button>
+                <a href="#" id="open-results" class= 'btn btn-success btn-lg' target="_blank" hidden>Open search results</a>
             </div>
-            <a href="admin_events.html">admin</a>
+            
+            
+            
 
         </div>
     </div>
