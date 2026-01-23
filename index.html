@@ -37,13 +37,13 @@
 
                     <!-- COUNTRIES -->
                     <div class='mb-3'>
-                        <strong>Country</strong>
+                        <strong>Country/Language</strong>
                         <div id='countryButtons' class='d-flex flex-wrap gap-2 mt-2'></div>
                     </div>
 
                     <!-- YEAR -->
                     <div class='mb-3'>
-                        <strong>Time limit or event</strong>
+                        <strong>Time limit</strong>
                         <div id='yearButtons' class='d-flex flex-wrap gap-2 mt-2'></div>
                         
                         <!-- <br>
@@ -54,20 +54,52 @@
                         -->
                     </div>
                         
-                    <!-- EXCLUDE -->
-                    <div class='form-check form-switch mb-4'>
-                        <input class='form-check-input' type='checkbox' id='excludeSocial' checked>
-                        <label class='form-check-label' for='excludeSocial'>Exclude Wiki, X, FB, YT, Insta, Reddit.</label>
-                    </div>
-                    <!-- IMAGES -->
-                    <div class='form-check form-switch mb-4'>
-                        <input class='form-check-input' type='checkbox' id='imagesOnly' unchecked>
-                        <label class='form-check-label' for='imagesOnly'>Show only images</label>
-                    </div>
-                    <!-- presentations -->
-                    <div class='form-check form-switch mb-4'>
-                        <input class='form-check-input' type='checkbox' id='presentationsOnly' unchecked>
-                        <label class='form-check-label' for='presentationsOnly'>Show only presentations</label>
+                    <!-- other -->
+                    <div class='mb-3'>
+                        <strong>Other specs</strong>
+                    
+                        <div class='form-check form-switch mb-4'>
+                            <label>
+                                <input type="radio" name="searchType" value="nothing" checked class='form-check-input'>
+                                    No specs
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="excludeSocial" checked class='form-check-input'>
+                                    Exclude Wiki, X, FB, YT, Insta, Reddit
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="statsOnly" class='form-check-input'>
+                                    Show stats on TradingEconomics.com
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="prOnly" class='form-check-input'>
+                                    Show only PR news
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="imagesOnly" class='form-check-input'>
+                                    Show images only
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="largeImagesOnly" class='form-check-input'>
+                                    Show large images only (4MP+)
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="pptOnly" class='form-check-input'>
+                                    Show presentations only
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="searchType" value="pdfOnly" class='form-check-input'>
+                                    Show PDFs only
+                            </label>
+                        </div>
+
                     </div>
 
                 </div>
@@ -75,12 +107,12 @@
 
             <!-- MOBILE SEARCH -->
             <div class='mobile-search d-md-none'>
-                <button class='btn btn-success w-100 btn-lg' id='search-mobile' onclick='runSearch()'>Create search query</button>
+                <button class='btn btn-success w-100 btn-lg' id='search-mobile' onclick='runSearch("mobile")'>Create search query</button>
             </div>
 
             <!-- DESKTOP SEARCH -->
             <div class='text-end mt-3 d-none d-md-block'>
-                <button class='btn btn-success btn-lg' id='create-query' onclick='runSearch()'>Create search query</button>
+                <button class='btn btn-success btn-lg' id='create-query' onclick='runSearch("desktop")'>Create search query</button>
                 <a href="#" id="open-results" class= 'btn btn-success btn-lg' target="_blank" hidden>Open search results</a>
             </div>
             

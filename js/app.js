@@ -20,6 +20,7 @@ const queryInput = document.getElementById('queryInput')
 const eventSelect = document.getElementById('eventSelect');
 const resultsLink = document.getElementById('open-results');
 const createBtn = document.getElementById('create-query');
+const searchType = document.getElementsByName('searchType');
     
 dctTrans[dctDefaultForm.sLang] = queryInput.value.trim(); // reset default language
 
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTitleFromInput(); // <-- set title immediately on load
     createCountryButtons();
     createYearButtons();
+    setSearchTypeFromStorage();
     //loadEventsCSV();
     //initEventSelector();
 
@@ -38,9 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ===============================
    QUERY FROM URL
 ================================ */
+
+
 function setDefaultQueryFromUrl() {
     const params = new URLSearchParams(window.location.search)
-    dctCurrForm.sText = (params.get('q') || '').trim() || dctDefaultForm.sText;
+    dctCurrForm.sText = (params.get('q') || '').trim() || localStorage.getItem('queryInput')  || dctDefaultForm.sText;
     dctCurrForm.sLang = (params.get('l') || '').trim() || dctDefaultForm.sLang;
     dctCurrForm.sGeo = (params.get('g') || '').trim() || dctDefaultForm.sGeo;
     queryInput.value = dctCurrForm.sText;
@@ -53,36 +57,19 @@ function updateTitleFromInput() {
     document.title = 'a: ' + dctCurrForm.sText;
 }
 
-// // 1️⃣ on leaving the input (blur)
-// queryInput.addEventListener('blur', handleQueryCommit);
-
-// // 2️⃣ on pressing Enter or Tab inside input
-// queryInput.addEventListener('keydown', e => {
-//     if (e.key === 'Enter' || e.key === 'Tab') {
-//         handleQueryCommit();
-//     }
-// });
-
-// // 3️⃣ on clicking **any button**
-// document.addEventListener('click', e => {
-//     if (e.target.tagName === 'BUTTON') {
-//         handleQueryCommit();
-//         if (e.target.id === 'search-desktop' || e.target.id === 'search-mobile') {
-//             runSearch();
-//         }
-//     }
-// });
-
-// function handleQueryCommit() {
-//     const dctTrans = {}  // clear dictionary
-//     dctTrans[dctDefaultForm.sLang] = queryInput.value.trim(); // reset default language
-// }
+function setSearchTypeFromStorage() {
+    const lastType = localStorage.getItem('lastSearchType');
+    if (lastType) {
+        const r = document.querySelector(`input[name="searchType"][value="${lastType}"]`)
+        if (r) r.checked = true
+    }
+}
 
 // nastavi country config
 const dctCountryConfig = {
     //CZ: { hl: dctDefaultForm.shl, gl: dctDefaultForm.sGeo },
     CZ: { lang: 'cs', hl: 'cs', gl: 'CZ', descr: 'Czechia' },
-    EN: { lang: 'en', lr: 'lang_en', descr: 'all in EN' },
+    EN: { lang: 'en', lr: 'lang_en', descr: 'Global' },
     SK: { lang: 'sk', gl: 'SK', descr: 'Slovakia'},
     UA: { lang: 'uk', hl: 'uk', gl: 'UA', descr: 'Ukraine'},
     US: { lang: 'en', hl: 'en', gl: 'US', descr: 'USA'},
@@ -193,7 +180,7 @@ function setYear(btn, index) {
 /* ===============================
    SEARCH LOGIC
 ================================ */
-async function runSearch() {
+async function runSearch(sDevice = 'desktop') {
     const text = queryInput.value.trim()
     if(!text) return
 
@@ -213,12 +200,12 @@ async function runSearch() {
             let finalText = prompt("Modify the translated text if needed:", translated);
             if (!finalText) return;
             dctTrans[lang] = finalText;
-            openGoogleSearch(finalText)
+            openGoogleSearch(finalText, sDevice)
         } catch {
-            openGoogleSearch(text)
+            openGoogleSearch(text, sDevice)
         }
     } else {
-        openGoogleSearch(dctTrans[lang])
+        openGoogleSearch(dctTrans[lang], sDevice)
     }
 }
 
@@ -231,60 +218,54 @@ async function translateText(text, lang) {
     return data.responseData.translatedText
 }
 
-function openGoogleSearch(queryText) {
-    let query = queryText
+function openGoogleSearch(queryText, sDevice) {
+    let query = encodeURIComponent(queryText)
+    localStorage.setItem('queryInput', queryText)
 
-    //const range = lstTimePeriods[selectedYearRangeIndex]
-    //let tbs = 'cdr:1'
-    //if(range.start) tbs += ',cd_min:' + range.start
-    //if(range.end) tbs += ',cd_max:' + range.end
     let tbs = '&tbs=' + lstTimePeriods[selectedYearRangeIndex].tbs
-
-    // let eventOption = eventSelect.options[eventSelect.selectedIndex];
-    // let eventStart = eventOption.dataset.start;
-    // let eventEnd = eventOption.dataset.end;
-    // const eventTbs = ''
-    // if (eventStart || eventEnd) {
-    //     eventTbs = '&tbs=cdr:1,'
-    //     if (eventStart){eventTbs += 'cd_min:' + eventStart}
-    //     if (eventEnd){eventTbs += ',cd_max:' + eventEnd}
-    // }
-
-    if(document.getElementById('imagesOnly').checked) {
-        query += '&tbm=isch'
+    const cntry = dctCountryConfig[selectedCountry].g    
+    const urlTE = '';
+    const sSearchTypeChecked = Array.from(searchType).find(radio => radio.checked).value;
+    localStorage.setItem('lastSearchType', sSearchTypeChecked);
+    switch (sSearchTypeChecked) {
+        case 'nothing': query += ''
+            break
+        case 'excludeSocial': query = '-site:facebook.com -site:instagram.com -site:youtube.com -site:x.com -site:wikipedia.org -site:reddit.com ' + query
+            break
+        case 'statsOnly': 
+            // query = 'site:tradingeconomics.com OR site:statista.com OR site:worldbank.org OR site:imf.org OR site:oecd.org ' + query
+            //query = 'site:tradingeconomics.com+' + query
+            //urlTE = 'https://tradingeconomics.com/search.aspx?q=' + query
+            break
+        case 'prOnly': query += ' press release'
+            break
+        case 'imagesOnly': query += '&tbm=isch'
+            break
+        case 'largeImagesOnly': query += '&tbm=isch&tbs=isz:lt,islt:4mp'
+            break
+        case 'pdfOnly': query += ' filetype:pdf'
+            break
+        case 'pptOnly': query += ' filetype:ppt'
+            break
     }
-    // if(dctCountryConfig[selectedCountry].lang !='cs' && dctCountryConfig[selectedCountry].lr !='lang_en') {
-    if(!(selectedCountry in ['CZ','EN'])) {
-        query += ' -site:.cz'
-    }
-    if(document.getElementById('excludeSocial').checked) {
-        query += ' -site:facebook.com -site:instagram.com -site:youtube.com -site:x.com -site:wikipedia.org -site:reddit.com'
-    }
-    if(document.getElementById('presentationsOnly').checked) {
-        query += ' (filetype:ppt OR filetype:pptx OR filetype:pdf)'
-    }
+    if(!['CZ','EN'].includes(selectedCountry)) {
+        query = '-site:.cz ' + query;
+        }
     
-    const cntry = dctCountryConfig[selectedCountry].g
-    const url = 'https://www.google.com/search?q=' + encodeURIComponent(query) +
-            cntry + tbs
-            //    '&gl=' + cfg.gl +
-            //    '&tbs=' + encodeURIComponent(event)
-            //    eventTbs
+    let url = '';
+    if (sSearchTypeChecked === 'statsOnly') {
+        url = 'https://tradingeconomics.com/search.aspx?q=' + encodeURIComponent(queryText);
+    } else {
+        url = 'https://www.google.com/search?q=' + query + cntry + tbs
+    }
 
-    // window.open(url, '_blank')
 
-    // const a = document.createElement('a')
-    //     a.href = url
-    //     a.target = '_blank'
-    //     a.rel = 'noopener'
-    //     a.click()
-
-    // // location.href = url
-    // resultsLink.href = url
-    // //resultsLink.style.display = 'inline-block'
-    // resultsLink.style.hidden = false;
-    // createBtn.style.display = 'none'
-    createLinkPage(url);
+        // for mobile open direct google search, for desktop create link page
+    if (sDevice === 'desktop') {
+        createLinkPage(url);
+    } else {
+        window.open(url, '_blank')
+    }
 
 }
 /* ===============================
