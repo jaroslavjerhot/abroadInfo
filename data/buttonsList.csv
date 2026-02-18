@@ -23,4 +23,3 @@ btnOutput;btn;videosOnly;videa;;google;Všechna;;;;;;;;vid;;;;;;;
 btnOutput;btn;podcastsOnly;podcasty;;google;Podcasty;Hledá se na: ;Apple.com, Spotify.com, ListenNotes.com, PodChaser.com;;;;;;;;;;;;;
 btnOutput;btn;pptOnly;ppt;;google;Prezentace;;;;;;;;;;;filetype:ppt;;;;
 btnOutput;btn;pdfOnly;pdf;;google;Dokumenty;;;;;;;;;;;filetype:pdf;;;;
-btnOutput;btn;modifyOutput;Uprav;;;;;;;;;;;;;;;;modifyOutputBtns;;
