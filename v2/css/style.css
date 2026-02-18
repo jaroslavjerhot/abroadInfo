@@ -1,0 +1,180 @@
+  
+body {
+    background-color: #0f0f0f;
+    color: #ffffff; /* white text */
+    padding-bottom: env(safe-area-inset-bottom);
+}
+h1, h2, h3, h4, h5, h6, strong, label, small, .year, td {
+    color: #ffffff !important;
+}
+.header {
+    display: flex;
+    justify-content: center; /* horizontal */
+    align-items: center;     /* vertical (if header has height) */
+    padding: 16px 0;
+}
+
+.logo {
+    width: 50vw;       /* half of mobile screen */
+    max-width: 320px;
+    min-width: 160px;
+}
+textarea, datalist, input {
+    width: 100%;
+    max-width: 900px;
+    background: #111;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    resize: none;        /* prevents dragging */
+}
+
+p {
+    
+    background: #111;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    resize: none;        /* prevents dragging */
+}
+
+.card {
+    background-color: #1a1a1a;
+    border: none;
+}
+.form-control {
+    background-color: #121212;
+    color: #ffffff;
+    border: 1px solid #333;
+}
+.form-control:focus {
+    background-color: #121212;
+    color: #ffffff;
+    border-color: #0d6efd;
+    box-shadow: none;
+}
+.btn {
+    min-height: 44px;
+}
+.btn-outline-primary,
+.btn-outline-secondary {
+    color: #ffffff;
+    border-color: #555;
+}
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+    background-color: #333;
+    border-color: #666;
+}
+.btn-country.active,
+.btn-year.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+}
+.form-check-input {
+    background-color: #222;
+    border-color: #555;
+}
+.radio-opt{
+    display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: 30vw;
+  max-width: 80px;
+  font-size: 13px;
+}
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+.form-check-label {
+    color: #ffffff; /* captions white */
+}
+.btn-small {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+@media (max-width: 768px) {
+    .mobile-search {
+        position: sticky;
+        bottom: 0;
+        background-color: #111;
+        padding: 12px;
+        box-shadow: 0 -2px 12px rgba(0,0,0,.6);
+        z-index: 1000;
+    }
+        }
+.form-select-dark {
+    background-color: #000;
+    color: #fff;
+    border-color: #444;
+}
+
+/* dropdown options */
+.form-select-dark option {
+    background-color: #000;
+    color: #fff;
+}
+
+/* focus state */
+.form-select-dark:focus {
+    background-color: #000;
+    color: #fff;
+    border-color: #888;
+    box-shadow: none;
+}
+
+/* disabled option (optional) */
+.form-select-dark option:disabled {
+    color: #777;
+}
+dialog {
+  border: none;
+  border-radius: 8px;
+  width: 75 vw;
+  max-width: 400px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(127,127,127,.3);
+  background-color: #0f0f0f;;
+}
+
+.year-picker {
+  width: 300px;
+}
+
+#years {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  
+}
+
+.year {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.year:hover {
+  background: #555;
+}
+
+.year.selected {
+  background: #4285f4;
+  color: white;
+}
+
+.year.in-range {
+  background: #cfe2ff;
+}
+tr:nth-child(odd) {
+  background-color: #222;
+}
+.icon-btn {
+  min-width: 50px;
+  max-height: 16px;
+}
