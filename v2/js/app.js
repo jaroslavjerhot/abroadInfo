@@ -647,18 +647,9 @@ function doClick(sDevice, sUrl){
             a.href = sUrl;
             a.target = '_blank';
             a.rel = 'noopener noreferrer';
-            //a.textContent = decodeURIComponent(sQueryText + dctMerged.sParams);
-            //a.className = sBtnClass;
-            // a.click();
-            location.href = sUrl; 
-            // document.getElementById('lnk').innerHTML = '';
-            // document.getElementById('lnk').appendChild(a);
-            // document.getElementById('lnkDescr').textContent = sUrl;
-
-            //document.body.appendChild(a);
-            const x=0;
-            // a.click();                    // 👈 Safari allows this
-            // a.remove();
+            document.body.appendChild(a);
+            a.click();                    // 👈 Safari allows this
+            a.remove();
 
     } else {
         window.open(sUrl, '_blank')

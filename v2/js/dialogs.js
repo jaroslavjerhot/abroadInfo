@@ -343,10 +343,12 @@ function createInputRow(labelText, type = "text", value = "") {
 async function showTimePeriodDialog(dct) {
     if (dct){
         const dctDates = fGoogleParamToDates(dct.sParamTbs)
-        dct.dStart = dctDates.start
-        dct.dEnd = dctDates.end
+        let lstStart = dctDates.start.split('-');
+        dct.dStart = lstStart[1] + '.' + lstStart[0] + '.' + lstStart[2];
+        let lstEnd = dctDates.end.split('-');
+        dct.dEnd = lstEnd[1] + '.' + lstEnd[0] + '.' + lstEnd[2];
     }else{
-        dct = {'sId':'', 'sLabel':'2020', dStart: "1.1.2020", dEnd: "31.12.2020"}
+        dct = {'sId':'', 'sLabel':'', dStart: "1.1.2020", dEnd: "31.12.2020"}
     }
     return new Promise((resolve) => {
     const dialog = document.createElement("dialog");
@@ -374,25 +376,24 @@ async function showTimePeriodDialog(dct) {
     // ckeck date and Update end date automatically
     startRow.input.addEventListener("blur", () => {
       const startDate = fConvertDMY(startRow.input.value);
-      if (!isNaN(startDate.getTime())) {
+      if (startDate) {
         const year = startDate.getFullYear();
-        //const endDate = fConvertDMY(endRow.input.value);
-        // const defaultEnd = new Date(year, 11, 31);
-        //const defaultEnd = new Date(`${year}-12-31T00:00:00`)`
         const defaultEnd = `31.12.${year}`;
         
         // if (isNaN(endDate.getTime()) || endDate < startDate) {
-          endRow.input.value = defaultEnd;
+          //endRow.input.value = defaultEnd;
         // }
-        nameRow.input.value = `${year}`; // simple default name based on year
+        // nameRow.input.value = nameRow.input.value ? nameRow.input.value : `${year}`; // simple default name based on year
       } else {
         showDialog("error", `Datum ${startRow.input.value} není platné! Použij formát d.m.r`, '');
       }
     });
     endRow.input.addEventListener("blur", () => {
       const endDate = fConvertDMY(endRow.input.value);
-      if (!isNaN(endDate.getTime())) {;
-      } else {
+      if (endDate) {
+        const year = endDate.getFullYear();
+        nameRow.input.value = nameRow.input.value ? nameRow.input.value : `${year}`; // simple default name based on year
+        } else {
         showDialog("error", `Datum ${endRow.input.value} není platné! Použij formát d.m.r`, '');
       }
     });
@@ -494,10 +495,11 @@ async function showMediaDialog(dct) {
     dialog.appendChild(nameRow.div);
     
     // Update name automatically
-    filterRow.input.addEventListener("change", () => {
+    filterRow.input.addEventListener("blur", () => {
       const filter = filterRow.input.value.trim();
       if (filter && !nameRow.input.value.trim()) {
-        nameRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', ''); // simple heuristic for name
+        filterRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', ''); // simple heuristic for name
+        nameRow.input.value = filterRow.input.value.replace(/^\/+|\/+$/g, '');
       }
     });
         

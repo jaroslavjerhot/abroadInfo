@@ -156,7 +156,7 @@ function convertGoogleTo(engine, googleUrl) {
 }
 function convertGoogleDatesToDuck(str) {
   return str.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, (_, m, d, y) => {
-    return `${y}-${d.padStart(2, "0")}-${m.padStart(2, "0")}`;
+    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
   });
 }
 
