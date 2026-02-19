@@ -284,14 +284,13 @@ async function fEditBtn(dct) {
 }
 
 
-function fRemoveBtn(dct) {
+async function fRemoveBtn(dct) {
   sSection = dct.sId.split('-')[0]
-  showMultiButtonDialog('Opravdu chceš smazat tlačítko "'+dct.sLabel+'"?', 'Smazat tlačítko', ['Zrušit', 'Smazat'], (index) => {
-  if (index === 1) {
+  const sAnswer = await showMultiButtonDialog('Opravdu chceš smazat "'+dct.sLabel+'"?', 'Smazat', ['Zrušit', 'Smazat'])
+  if (sAnswer === 'Smazat') {
     fRemoveBtnById(sSection, dct.sId); 
   }
-})  
-}
+ }
 // Helper to create input row
 function createInputRow(labelText, type = "text", value = "") {
     const div = document.createElement("div");
@@ -498,7 +497,7 @@ async function showMediaDialog(dct) {
     filterRow.input.addEventListener("blur", () => {
       const filter = filterRow.input.value.trim();
       if (filter && !nameRow.input.value.trim()) {
-        filterRow.input.value = filter.replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.'); // simple heuristic for name
+        filterRow.input.value = filter.replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.').toLowerCase(); // simple heuristic for name
         nameRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.'); // simple heuristic for name
       }
     });
