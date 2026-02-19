@@ -77,6 +77,27 @@ p {
     border-color: #0d6efd;
     color: #ffffff;
 }
+.bottom-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+
+  background: white;   /* or your page color */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-search {
+  flex: 1;              /* equal width */
+  font-size: 1.1rem;    /* smaller font */
+  padding: 12px;
+
+}
+
 .form-check-input {
     background-color: #222;
     border-color: #555;
@@ -102,12 +123,15 @@ p {
 }
 @media (max-width: 768px) {
     .mobile-search {
-        position: sticky;
+        /* position: sticky; */
         bottom: 0;
         background-color: #111;
         padding: 12px;
         box-shadow: 0 -2px 12px rgba(0,0,0,.6);
         z-index: 1000;
+    }
+    dialog {
+        width: 90vw;         /* 90% of viewport width */
     }
         }
 .form-select-dark {
