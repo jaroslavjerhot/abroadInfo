@@ -30,6 +30,9 @@ textarea, datalist, input {
     font-size: 16px;
     resize: none;        /* prevents dragging */
 }
+textarea::placeholder {
+  color: #ccc;
+}
 
 p {
     
@@ -63,13 +66,13 @@ p {
     color: #ffffff;
     border-color: #555;
 }
-.btn-outline-primary:hover,
+/* .btn-outline-primary:hover,
 .btn-outline-secondary:hover {
-    background-color: #333;
-    border-color: #666;
-}
-.btn-country.active,
-.btn-year.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+} */
+
+.btn.active {
     background-color: #0d6efd;
     border-color: #0d6efd;
     color: #ffffff;
@@ -131,6 +134,10 @@ p {
 .form-select-dark option:disabled {
     color: #777;
 }
+
+.form-switch .form-check-input {
+  transform: scale(0.8);
+}
 dialog {
   border: none;
   border-radius: 8px;
@@ -141,36 +148,7 @@ dialog {
   background-color: #0f0f0f;;
 }
 
-.year-picker {
-  width: 300px;
-}
 
-#years {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  
-}
-
-.year {
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.year:hover {
-  background: #555;
-}
-
-.year.selected {
-  background: #4285f4;
-  color: white;
-}
-
-.year.in-range {
-  background: #cfe2ff;
-}
 tr:nth-child(odd) {
   background-color: #222;
 }
@@ -178,3 +156,6 @@ tr:nth-child(odd) {
   min-width: 50px;
   max-height: 16px;
 }
+
+
+
