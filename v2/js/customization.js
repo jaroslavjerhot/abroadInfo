@@ -202,10 +202,11 @@ function splitSearchTokens(csv, bPure=false) {
 
   parts.forEach(p => {
     const isMinus = p.startsWith('-');
-    const clean = isMinus ? p.slice(1) : p;
+    let clean = isMinus ? p.slice(1) : p;
 
     const isDomain = clean.includes('.') && !clean.startsWith('/') 
     clean = clean.replace(/^\/+|\/+$/g, '');
+    
 
     if (isDomain && !isMinus) sitePlus.push(clean);
     else if (isDomain && isMinus) siteMinus.push(clean);

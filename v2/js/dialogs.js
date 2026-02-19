@@ -286,15 +286,11 @@ async function fEditBtn(dct) {
 
 function fRemoveBtn(dct) {
   sSection = dct.sId.split('-')[0]
-  fRemoveBtnById(sSection, dct.sId); 
-  // switch (sSection){
-  //   case 'btnCountry': fAddCountryBtn(dct.sId); break
-  //   case 'btnTime': 
-  //     fRemoveBtnById(sSection, dct.sId); 
-  //     break
-  //   case 'btnMedia': break
-  //   case 'btnOutput': break
-  // }
+  showMultiButtonDialog('Opravdu chceš smazat tlačítko "'+dct.sLabel+'"?', 'Smazat tlačítko', ['Zrušit', 'Smazat'], (index) => {
+  if (index === 1) {
+    fRemoveBtnById(sSection, dct.sId); 
+  }
+})  
 }
 // Helper to create input row
 function createInputRow(labelText, type = "text", value = "") {
@@ -665,4 +661,52 @@ async function showCountryDialog(dct) {
     dialog.showModal();
    });
 }
+function showMultiButtonDialog(message, title = "", buttonLabels = []) {
+  return new Promise((resolve) => {
+    // 1️⃣ Create dialog
+    const dialog = document.createElement('dialog');
+    dialog.name = "multiDialog";
+    dialog.classList.add('multi-dialog');
+
+    // 2️⃣ Add content
+    const content = document.createElement('div');
+    content.classList.add('dialog-content');
+    content.innerHTML = `<h4>${title}</h4><p>${message}</p>`;
+
+    dialog.appendChild(content);
+
+    // 3️⃣ Buttons container
+    const buttons = document.createElement('div');
+    buttons.classList.add('dialog-buttons');
+    buttons.style.textAlign = "right";
+    buttons.style.marginTop = "20px";
+
+    buttonLabels.forEach(label => {
+      const btn = document.createElement('button');
+      btn.textContent = label;
+      //btn.classList.add('btn-option text-end mt-3'); // you can style differently if needed
+      btn.className = 'btn btn-outline-secondary'; // you can style differently if needed
+
+      // Resolve promise with button label on click
+      btn.addEventListener('click', () => {
+        resolve(label);
+        dialog.close();
+      });
+
+      buttons.appendChild(btn);
+    });
+
+    dialog.appendChild(buttons);
+
+    // 4️⃣ Remove dialog from DOM after close
+    dialog.addEventListener('close', () => {
+      dialog.remove();
+    });
+
+    // 5️⃣ Append and show
+    document.body.appendChild(dialog);
+    dialog.showModal();
+  });
+}
+
 

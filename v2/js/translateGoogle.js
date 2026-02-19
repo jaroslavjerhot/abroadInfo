@@ -90,6 +90,12 @@ function convertGoogleTo(engine, googleUrl) {
             if (tbs.includes('qdr:m')) newParams.set('df', 'm');
             if (tbs.includes('qdr:y')) newParams.set('df', 'y');
 
+            if (tbs.includes('cdr:1')) {
+                let sDf = convertGoogleTbsToDuck(tbs);
+                newParams.set('df', sDf);
+            }
+            
+
             break;
 
         // =================================================
@@ -147,4 +153,16 @@ function convertGoogleTo(engine, googleUrl) {
     let sUrl = `${base}?${newParams.toString()}`;
     sUrl = sUrl.replace('++', '+');
     return sUrl;
+}
+function convertGoogleDatesToDuck(str) {
+  return str.replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, (_, m, d, y) => {
+    return `${y}-${d.padStart(2, "0")}-${m.padStart(2, "0")}`;
+  });
+}
+
+function convertGoogleTbsToDuck(sTbs) {
+    let sDf = sTbs
+    sDf = convertGoogleDatesToDuck(sDf);
+
+    return sDf.replace('cdr:1', '').replace('cd_min:', '').replace('cd_max:', '..').replaceAll(',', '');
 }

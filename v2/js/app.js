@@ -564,9 +564,9 @@ async function runEngineQuery(sDevice, sEngine) {
     }
     document.title = sTitlePrefix + (dctCurrentVals.sText || dctMerged.sSitePlus || dctMerged.sInUrlPlus).trim();
 
-    dctCurrentVals['sQuery-google'] = sUrl
+    //dctCurrentVals['sQuery-google'] = sUrl
 
-    translateQuery(sEngine) // to set query for other engines based on google query
+    sUrl = translateQuery(sEngine, sUrl) // to set query for other engines based on google query
     doClick(sDevice, sUrl)
 
 }
@@ -611,7 +611,7 @@ function dateToUsformat_smaz(str) {
     return `${month.padStart(2,'0')}/${day.padStart(2,'0')}/${year}`;
 }
 
-function translateQuery(sEngine){
+function translateQuery(sEngine, sUrl){
     if (!dctCurrentVals['sQuery-google']){
 // vymazou se i ostatni query
         Object.keys(dctCurrentVals).forEach(key => {
@@ -620,6 +620,7 @@ function translateQuery(sEngine){
         }
     });
     }
+    dctCurrentVals['sQuery-google'] = sUrl
     if (dctCurrentVals['sQuery-google']) {
         json = JSON.stringify(dctCurrentVals)
         localStorage.setItem('currentVals', json)
@@ -633,8 +634,8 @@ function translateQuery(sEngine){
         json = JSON.stringify(dctCurrentVals)
         localStorage.setItem('currentVals', json)
     }
-    const sUrl = dctCurrentVals['sQuery-' + sEngine]
-    return sUrl
+    const sUrlTransl = dctCurrentVals['sQuery-' + sEngine]
+    return sUrlTransl
 }
 
 function doClick(sDevice, sUrl){
