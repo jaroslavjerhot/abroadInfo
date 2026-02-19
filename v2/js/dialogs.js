@@ -64,7 +64,7 @@ function showInput(message, title = "Enter value", defaultValue = "") {
         <br>
 
         <div style="text-align:right;margin-top:20px;">
-          <button value="cancel" class="btn btn-outline-secondary">Zavři</button>
+          <button value='Zruš' class="btn btn-outline-secondary">Zavři</button>
           <button value="ok" class="btn btn-success">OK</button>
         </div>
       </form>
@@ -110,7 +110,7 @@ async function showCheckBox(lxd, sId, sLabel, title = "Select items") {
           </div>
         `).join("")}
         <div style="text-align:right;margin-top:20px;">
-          <button value="cancel" class="btn btn-outline-secondary">Cancel</button>
+          <button value='Zruš' class="btn btn-outline-secondary">Cancel</button>
           <button value="ok" class="btn btn-success">OK</button>
         </div>
       </form>
@@ -444,7 +444,7 @@ async function showTimePeriodDialog(dct) {
 
     const btnCancel = document.createElement("button");
     btnCancel.type = "button";
-    btnCancel.textContent = "Cancel";
+    btnCancel.textContent = 'Zruš';
     btnCancel.className = "btn btn-secondary btn-sm";
     btnCancel.addEventListener("click", () => {
       //resolve(null);
@@ -498,8 +498,8 @@ async function showMediaDialog(dct) {
     filterRow.input.addEventListener("blur", () => {
       const filter = filterRow.input.value.trim();
       if (filter && !nameRow.input.value.trim()) {
-        filterRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', ''); // simple heuristic for name
-        nameRow.input.value = filterRow.input.value.replace(/^\/+|\/+$/g, '');
+        filterRow.input.value = filter.replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.'); // simple heuristic for name
+        nameRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.'); // simple heuristic for name
       }
     });
         
@@ -549,7 +549,7 @@ async function showMediaDialog(dct) {
 
     const btnCancel = document.createElement("button");
     btnCancel.type = "button";
-    btnCancel.textContent = "Cancel";
+    btnCancel.textContent = 'Zruš';
     btnCancel.className = "btn btn-secondary btn-sm";
     btnCancel.addEventListener("click", () => {
       //resolve(null);
@@ -647,7 +647,7 @@ async function showCountryDialog(dct) {
 
     const btnCancel = document.createElement("button");
     btnCancel.type = "button";
-    btnCancel.textContent = "Cancel";
+    btnCancel.textContent = 'Zruš';
     btnCancel.className = "btn btn-secondary btn-sm";
     btnCancel.addEventListener("click", () => {
       //resolve(null);

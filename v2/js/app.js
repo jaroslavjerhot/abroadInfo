@@ -520,6 +520,7 @@ async function runEngineQuery(sDevice, sEngine) {
     // if site plus is set remove gl and hl to avoid google ignoring site: in favor of lang/geo
     if (dctMerged.sSitePlus) {
         dctMerged.sParams = dctMerged.sParams.replace(/&gl=[^&]+/, '').replace(/&lr=[^&]+/, '')
+        dctMerged.sSiteMinus = ''
     }
     // for trading economics force hl=en to get english results even for other country selection
     dctMerged.sSearchEngine = dctMerged.sSearchEngine.replaceAll('google','') 
