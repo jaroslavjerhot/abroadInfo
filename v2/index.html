@@ -17,6 +17,9 @@
     <link rel="icon" href="img/FaviconBlack32.png">
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- flatpickr for date -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>  
 
 </head>
 <body>
@@ -33,42 +36,6 @@
                     <h3 class='mb-4 text-center'>abroadInfo</h3>
                     -->
                     
-
-                    <!-- INPUT -->
-                    <div class='mb-3'>
-                        <!-- 
-                        <input id='queryInput' type='text' class='form-control form-control-lg' placeholder='Enter search text...' value='Česko'>
-                        -->
-                        <strong>Vyhledej:</strong>
-                        <p>
-                        Pro zakázání určitého slova dej před něj mínus, pro synonymum dej před něj ~. Pro hledání přesné fráze použij uvozovky.
-                        </p>
-                        <textarea id="searchedText" rows="1" placeholder="Enter search text..."
-                            lang="en"          autocapitalize="none"
-                            autocomplete="off" autocorrect="off" style="overflow:hidden"
-                            spellcheck="false">Česko</textarea>
-                        <br>
-
-                        <strong>Přelož:</strong>
-                        
-                        <div class='form-check form-switch mb-4'>
-                            <label class="radio-opt">
-                                <input type="radio" name="translLng" value="cs" class='form-check-input'>
-                                    z CS
-                            </label>
-                            &nbsp
-                            <label class="radio-opt">
-                                <input type="radio" name="translLng" value="en" class='form-check-input'>
-                                    z EN
-                            </label>
-                            <label class="radio-opt">
-                                <input type="radio" name="translLng" value="xx" checked class='form-check-input'>
-                                    Ne
-                            </label>
-                    </div>
-
-                    
-
                     <!-- COUNTRIES -->
                     <div class='mb-3'>
                         <strong>Země/jazyk</strong>
@@ -76,6 +43,45 @@
                         <small id="btnCountryDescr"></small>
                     </div>
 
+                    <!-- INPUT -->
+                    <div class='mb-3'>
+                        <div class="d-flex justify-content-between align-items-center">
+                    <label for="searchedText" class="form-label mb-0">
+                        <strong>Vyhledej:</strong>
+                    </label>
+
+                    <a href="#" onclick="fTextAreaClear(); return false;">
+                        Vymaž
+                    </a>
+                    </div>
+                        
+                        <textarea id="searchedText" rows="1" placeholder="Vlož text, nebo nech volné, pokud je nastaven typ media"
+                            lang="en"          autocapitalize="none"
+                            autocomplete="off" autocorrect="off" style="overflow:hidden"
+                            spellcheck="false">Česko</textarea>
+                        <br>
+
+                    <div class="d-flex align-items-center gap-3">
+                    
+                    <label class="form-label mb-0">
+                        <strong>Přelož:</strong>
+                    </label>
+
+                    <div class="form-check form-switch mb-0 d-flex align-items-center">
+                        
+                        <input class="form-check-input me-2" type="radio" name="translLng" id="cs" value="cs">
+                        <label class="radio-opt" for="en">z CS</label>
+                    
+                        <input class="form-check-input me-2" type="radio" name="translLng" id="en" value="en">
+                        <label class="radio-opt" for="en">z EN</label>
+                    
+                        <input class="form-check-input me-2" type="radio" name="translLng" id="xx" value="xx">
+                        <label class="radio-opt" for="xx">Nepřekládat</label>
+                    </div>
+
+                    </div>
+                    <br>
+                    
                     <!-- YEAR -->
                     <div class='mb-3'>
                         <strong>Časové období</strong>
@@ -105,23 +111,23 @@
             <!-- MOBILE SEARCH -->
             <div class='mobile-search d-md-none'>
                 <!-- <button class='btn btn-secondary btn-sm' id='removeAll' onclick='removeAllStored()'>Smaž uživ. tlačítka</button> -->
-                <button class='btn btn-success w-30 btn-sm' id='search-mobile-google' onclick='openSearchEngine("mobile", "google")'>google</button>
-                <button class='btn btn-success w-30 btn-sm' id='search-mobile-bing' onclick='openSearchEngine("mobile", "bing")'>bng</button>
-                <button class='btn btn-success w-30 btn-sm' id='search-mobile-duckduckgo' onclick='openSearchEngine("mobile", "duckduckgo")'>ddg</button>
-                <button class='btn btn-success w-30 btn-sm' id='search-mobile-yandex' onclick='openSearchEngine("mobile", "yandex")'>ynx</button>
-                <button class='btn btn-success w-30 btn-sm' id='search-mobile-startpage' onclick='openSearchEngine("mobile", "startpage")'>stp</button>
-                <button class='btn btn-success w-30 btn-sm' id='search-mobile-baid' onclick='openSearchEngine("mobile", "baidu")'>bdu</button>
+                <button class='btn btn-success w-30 btn-sm' id='search-mobile-google' onclick='runEngineQuery("mobile", "google")'>google</button>
+                <button class='btn btn-success w-30 btn-sm' id='search-mobile-bing' onclick='runEngineQuery("mobile", "bing")'>bng</button>
+                <button class='btn btn-success w-30 btn-sm' id='search-mobile-duckduckgo' onclick='runEngineQuery("mobile", "duckduckgo")'>ddg</button>
+                <button class='btn btn-success w-30 btn-sm' id='search-mobile-yandex' onclick='runEngineQuery("mobile", "yandex")'>ynx</button>
+                <button class='btn btn-success w-30 btn-sm' id='search-mobile-startpage' onclick='runEngineQuery("mobile", "startpage")'>stp</button>
+                <button class='btn btn-success w-30 btn-sm' id='search-mobile-baid' onclick='runEngineQuery("mobile", "baidu")'>bdu</button>
             </div>
 
             <!-- DESKTOP SEARCH -->
             <div class='text-end mt-3 d-none d-md-block'>
                 <button class='btn btn-secondary btn-sm' id='removeAll' onclick='removeAllStored()'>Smaž uživ. tlačítka</button>
-                <button class='btn btn-success btn-lg' id='search-desktop-google' onclick='openSearchEngine("desktop", "google")'>Google</button>
-                <button class='btn btn-success btn-lg' id='search-desktop-bing' onclick='openSearchEngine("desktop", "bing")'>Bing</button>
-                <button class='btn btn-success btn-lg' id='search-desktop-duckduckgo' onclick='openSearchEngine("desktop", "duckduckgo")'>DuckDuckGo</button>
-                <button class='btn btn-success btn-lg' id='search-desktop-yandex' onclick='openSearchEngine("desktop", "yandex")'>Yandex</button>
-                <button class='btn btn-success btn-lg' id='search-desktop-startpage' onclick='openSearchEngine("desktop", "startpage")'>Startpage</button>
-                <button class='btn btn-success btn-lg' id='search-desktop-baid' onclick='openSearchEngine("desktop", "baidu")'>Baidu</button>
+                <button class='btn btn-success btn-lg' id='search-desktop-google' onclick='runEngineQuery("desktop", "google")'>Google</button>
+                <button class='btn btn-success btn-lg' id='search-desktop-bing' onclick='runEngineQuery("desktop", "bing")'>Bing</button>
+                <button class='btn btn-success btn-lg' id='search-desktop-duckduckgo' onclick='runEngineQuery("desktop", "duckduckgo")'>DuckDuckGo</button>
+                <button class='btn btn-success btn-lg' id='search-desktop-yandex' onclick='runEngineQuery("desktop", "yandex")'>Yandex</button>
+                <button class='btn btn-success btn-lg' id='search-desktop-startpage' onclick='runEngineQuery("desktop", "startpage")'>Startpage</button>
+                <button class='btn btn-success btn-lg' id='search-desktop-baid' onclick='runEngineQuery("desktop", "baidu")'>Baidu</button>
             </div>
             
 
