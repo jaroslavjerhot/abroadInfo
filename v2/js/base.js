@@ -210,3 +210,28 @@ function getUrlParams() {
     });
     return params;
 }
+
+function fConvertDMY(text) {
+  // Remove any whitespace
+  text = text.trim();
+
+  // Split by dot
+  const parts = text.split('.');
+  if (parts.length !== 3) return null;
+
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // JS months: 0 = Jan
+  const year = parseInt(parts[2], 10);
+
+  // Create date
+  const date = new Date(year, month, day);
+
+  // Validate
+  if (date.getFullYear() === year &&
+      date.getMonth() === month &&
+      date.getDate() === day) {
+    return date; // valid
+  }
+
+  return null; // invalid
+}

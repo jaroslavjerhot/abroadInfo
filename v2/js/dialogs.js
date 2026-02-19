@@ -140,7 +140,7 @@ function showTableDialog(lxd, sHeadline, sLabelKey='sLabel', sIdKey='sId') {
   
   const dialog = document.createElement("dialog");
   dialog.name = "tableDialog-"+ sHeadline.replace(/\s/g, '');
-
+  dialog.className = "p-4";
     const headline = document.createElement("p");
     headline.textContent = sHeadline;
     headline.className = "fw-bold fs-5 mb-3";
@@ -304,14 +304,43 @@ function createInputRow(labelText, type = "text", value = "") {
     const label = document.createElement("label");
     label.textContent = labelText;
     label.className = "form-label";
-
+    
     const input = document.createElement("input");
-    input.type = type;
     input.value = value;
-    input.className = "form-control";
+    input.className = "form-control";      
+    
+    if (type === 'text' || type === 'date') {
+      input.type = type;
+    } else if (type === 'date-text') {  
+      input.type = "text";        // IMPORTANT
+      input.setAttribute('inputmode', 'numeric');  // numeric keyboard
+      input.setAttribute('pattern', '[0-9/]*');    // optional: help validation
 
-    div.appendChild(label);
-    div.appendChild(input);
+      // Add it to DOM first
+     
+      
+  //     flatpickr(input, {
+  //       // appendTo: div.closest('dialog'), // or dialog container
+  //       defaultDate: new Date(2020, 11, 31),
+  //       dateFormat: "d.m.Y",
+  //       allowInput: true,
+  //       monthSelectorType: "dropdown",
+  //       yearSelectorType: "dropdown",
+  //       onOpen: function() {
+  //   // Hide the dialog
+  //   dialog.modal('hide');
+  // },
+  // onClose: function() {
+  //   // Optional: reopen the dialog if you want
+  //   dialog.modal('show');
+  // }
+  //     });
+  //     const x = flatpickr.parseDate(value, "Y-m-d");
+     }
+    
+    div.appendChild(label)
+    div.appendChild(input)
+    
     return { div, input };
 }
 
@@ -321,7 +350,7 @@ async function showTimePeriodDialog(dct) {
         dct.dStart = dctDates.start
         dct.dEnd = dctDates.end
     }else{
-        dct = {'sId':'', 'sLabel':'2020', dStart: "2020-01-01", dEnd: "2020-12-31"}
+        dct = {'sId':'', 'sLabel':'2020', dStart: "1.1.2020", dEnd: "31.12.2020"}
     }
     return new Promise((resolve) => {
     const dialog = document.createElement("dialog");
@@ -333,30 +362,45 @@ async function showTimePeriodDialog(dct) {
     headline.textContent = "Definuj časové období";
     headline.className = "fw-bold fs-5 mb-3";
     dialog.appendChild(headline);
-
+    // document.body.appendChild(dialog);
     
     // Inputs
-    const startRow = createInputRow("Počáteční datum", "date", dct.dStart);
-    const endRow = createInputRow("Koncové datum", "date", dct.dEnd);
+    const startRow = createInputRow("Počáteční datum", "date-text", dct.dStart);
+    const endRow = createInputRow("Koncové datum", "date-text", dct.dEnd);
     const nameRow = createInputRow("Název časového období (např. Volby ČR 2021)", "text", dct.sLabel);
     
     dialog.appendChild(startRow.div);
     dialog.appendChild(endRow.div);
     dialog.appendChild(nameRow.div);
+
     
-    // Update end date automatically
-    startRow.input.addEventListener("change", () => {
-      const startDate = new Date(startRow.input.value);
+    
+    // ckeck date and Update end date automatically
+    startRow.input.addEventListener("blur", () => {
+      const startDate = fConvertDMY(startRow.input.value);
       if (!isNaN(startDate.getTime())) {
         const year = startDate.getFullYear();
-        const endDate = new Date(endRow.input.value);
-        const defaultEnd = new Date(year, 11, 31);
-        if (isNaN(endDate.getTime()) || endDate < startDate) {
-          endRow.input.valueAsDate = defaultEnd;
-        }
+        //const endDate = fConvertDMY(endRow.input.value);
+        // const defaultEnd = new Date(year, 11, 31);
+        //const defaultEnd = new Date(`${year}-12-31T00:00:00`)`
+        const defaultEnd = `31.12.${year}`;
+        
+        // if (isNaN(endDate.getTime()) || endDate < startDate) {
+          endRow.input.value = defaultEnd;
+        // }
+        nameRow.input.value = `${year}`; // simple default name based on year
+      } else {
+        showDialog("error", `Datum ${startRow.input.value} není platné! Použij formát d.m.r`, '');
       }
     });
-
+    endRow.input.addEventListener("blur", () => {
+      const endDate = fConvertDMY(endRow.input.value);
+      if (!isNaN(endDate.getTime())) {;
+      } else {
+        showDialog("error", `Datum ${endRow.input.value} není platné! Použij formát d.m.r`, '');
+      }
+    });
+    
     // Buttons
     const btnDiv = document.createElement("div");
     btnDiv.className = "text-end mt-3";
@@ -435,8 +479,8 @@ async function showMediaDialog(dct) {
 
     const descr = document.createElement("p");
     descr.innerHTML = `
-      Zadej název domény (třeba <b>seznamzpravy.cz</b>), případně klíčové slovo, které se v URL musí vyskytovat.
-      Např. po zadání klíčového slova <b>prezidentpavel</b> se budou prohledávat Pavlovy sociální sítě, protože ve své adrese mají toto klíčové slovo.
+      Zadej název domény (třeba <b>seznamzpravy.cz</b>), případně klíčové slovo, které se v URL musí vyskytovat. Klíčové slovo musí mít na začáktu lomítko
+      Např. po zadání klíčového slova <b>/prezidentpavel</b> se budou prohledávat Pavlovy sociální sítě, protože ve své adrese mají toto klíčové slovo.
       <br>
       Lze zadat i několik domén nebo klíčových slov oddělených čárkou. 
       <br>
@@ -457,7 +501,7 @@ async function showMediaDialog(dct) {
     filterRow.input.addEventListener("change", () => {
       const filter = filterRow.input.value.trim();
       if (filter && !nameRow.input.value.trim()) {
-        nameRow.input.value = filter.split(',')[0]; // simple heuristic for name
+        nameRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', ''); // simple heuristic for name
       }
     });
         

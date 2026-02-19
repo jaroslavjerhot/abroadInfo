@@ -110,10 +110,6 @@ const translLng = document.getElementById("translLng")
 //     }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    // load buttons from CSV
-    // const sCountryCsv = await fLoadCsv(sCountryListUrl)
-    // lxdCountries = fCsvToLxd(sCountryCsv)
-    // const lstCountries = lxdCountries.map(row => row.sCountry);
     
     getInitialValues()
     
@@ -134,12 +130,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     btnsIds = fGetIdsFromLxd(btns)
 
-    // load media from CSV
-    // const sMediaCsv = await fLoadCsv(sMediaListUrl)
-    // media = fCsvToGroupedLxd(sMediaCsv)
-    // media = fModifyMedia(media)
-    
-    
      // load current form from local storage
     dctCurrent = fGetDctFromLocStorage(dctFormKeys, btns)
     // create buttons
@@ -277,33 +267,7 @@ function fCreateBtns(sSection) {
     btnContainer.innerHTML = ''
     btns[sSection].forEach((dct, index) => {
         const btn = createButton(btnContainer, dct)
-        // const btn = document.createElement('button')
-        // btn.className = dct.sClass || sBtnClass
-        // btn.id = dct.sId
-        // // big and small label if exists
-        // btn.innerHTML = dct.sSmallLabel ? `${dct.sLabel} <small><br>${dct.sSmallLabel}</small>`: dct.sLabel
-        // // sets onClick event
-        // if (!dct.sOnClick){
-        //     btn.onclick = () => fOnBtnClick(btn)
-        // } else if (dct.sOnClick === 'addCountryBtn'){
-        //     btn.onclick = () => fAddCountryBtn()
-        // } else if (dct.sOnClick === 'removeCountryBtn'){
-        //     btn.onclick = () => fRemoveCountryBtn()
-        // } else if (dct.sOnClick === 'remove'){
-        //     btn.onclick = () => fOpenRemoveDialog(sSectionId)
-        // }
-        // // if country media are expected but not defined, set non clickaable
-        // if (dct.bCountryMediaBtn === 'x') {
-        //     let sCountry = dctCurrent['btnCountry'].split('-')[1]
-        //     sMediaId = dct.sId.split('-')[1] + '-' + sCountry
-        //     dctMedia = fGetDctById(media, sMediaId)
-        //     if (!dctMedia){
-        //         btn.classList.add('disabled')}
-        // }
-        // // create button
-        // btnContainer.appendChild(btn)
-        // if active run click
-        //if(btn.id === dctCurrent[sSectionId]) btn.click()  
+        
         if ((dctCurrentVals) && (dctCurrentVals[sSection]===btn.id)) fOnBtnClick(btn, dct)
     })
 }
@@ -354,9 +318,14 @@ function fOnBtnClick(btn, dct) {
     const btnPrev = document.getElementById(sBtnPrevId) || null
     dctCurrentVals[sSection] = btn.id
 
-    if (btnPrev) {btnPrev.classList.remove('active')}
-    btn.classList.add('active')
-    // dctCurrent[sSection] = btn.id
+    
+    if (btnPrev) {
+        btnPrev.classList.remove('active')
+        btnPrev.setAttribute('aria-pressed', 'false')
+    }
+
+btn.classList.add('active')
+    btn.setAttribute('aria-pressed', 'true')
 
     document.getElementById(sSection + 'Descr').innerText = dct.sOuterDescr || ''
     dctCurrentVals['sQuery-google'] = ''
@@ -483,12 +452,12 @@ async function runSearch_smazat(sDevice = 'desktop') {
             let finalText = prompt('Uprav do ' + dctCurrent.sTargetLang.toUpperCase() + ' přeložený text, pokud je třeba:', translated);
             if (!finalText) return;
             dctTrans[dctCurrent.sTargetLang] = finalText;
-            createGoogleQuery(finalText, sDevice)
+            runEngineQuery(finalText, sDevice)
         } catch {
-            createGoogleQuery(searchedText.value.trim(), sDevice)
+            runEngineQuery(searchedText.value.trim(), sDevice)
         }
     } else {
-        createGoogleQuery(searchedText.value.trim(), sDevice)
+        runEngineQuery(searchedText.value.trim(), sDevice)
     }
 }
 
@@ -515,7 +484,7 @@ function getParamsStrFromActiveBtnsSmaz(sType){
     return qs
 }
 
-async function createGoogleQuery() {
+async function runEngineQuery(sDevice, sEngine) {
 
     const lxdSelected = [
         btns.btnCountry.find(d => d.sId === dctCurrentVals.btnCountry) || btns.btnCountry[0],
@@ -596,6 +565,10 @@ async function createGoogleQuery() {
     document.title = sTitlePrefix + (dctCurrentVals.sText || dctMerged.sSitePlus || dctMerged.sInUrlPlus).trim();
 
     dctCurrentVals['sQuery-google'] = sUrl
+
+    translateQuery(sEngine) // to set query for other engines based on google query
+    doClick(sDevice, sUrl)
+
 }
 /* ===============================
    ADMIN EVENTS CSV LOAD
@@ -638,15 +611,13 @@ function dateToUsformat_smaz(str) {
     return `${month.padStart(2,'0')}/${day.padStart(2,'0')}/${year}`;
 }
 
-async function openSearchEngine(sDevice, sEngine){
+function translateQuery(sEngine){
     if (!dctCurrentVals['sQuery-google']){
 // vymazou se i ostatni query
-        Object.keys(dctCurrentVals).forEach(async key => {
+        Object.keys(dctCurrentVals).forEach(key => {
         if (key.startsWith('sQuery-')) {
             delete dctCurrentVals[key]
         }
-
-        await createGoogleQuery()
     });
     }
     if (dctCurrentVals['sQuery-google']) {
@@ -663,6 +634,10 @@ async function openSearchEngine(sDevice, sEngine){
         localStorage.setItem('currentVals', json)
     }
     const sUrl = dctCurrentVals['sQuery-' + sEngine]
+    return sUrl
+}
+
+function doClick(sDevice, sUrl){
     
     if (sDevice === 'desktop') {
         // createLinkPage(url);

@@ -1,4 +1,4 @@
-async function fAddCountryBtn(iPos=0){
+async function fAddCountryBtn_smaz(iPos=0){
   if (!(sCountryCsv)){
       sCountryCsv = await fLoadCsv(sCountryListUrl)
       lxdCountries = fCsvToLxd(sCountryCsv)
@@ -59,7 +59,7 @@ async function fRemoveBtns(sSection){
   btnsIds = fGetIdsFromLxd(btns)
 }
 
-async function fCountryNameToBtn(sCountryName, sIdAfter){
+async function fCountryNameToBtn_smaz(sCountryName, sIdAfter){
   const dct = lxdCountries.find(c => c.sSmallLabel === sCountryName);
   
   if (dct){
@@ -204,7 +204,8 @@ function splitSearchTokens(csv, bPure=false) {
     const isMinus = p.startsWith('-');
     const clean = isMinus ? p.slice(1) : p;
 
-    const isDomain = clean.includes('.');
+    const isDomain = clean.includes('.') && !clean.startsWith('/') 
+    clean = clean.replace(/^\/+|\/+$/g, '');
 
     if (isDomain && !isMinus) sitePlus.push(clean);
     else if (isDomain && isMinus) siteMinus.push(clean);
@@ -271,8 +272,9 @@ function fGoogleParamToDates(str) {
 function fDatesToGoogleParam(start, end) {
   function format(dateStr) {
     if (!dateStr) return null;
-    const [dd, mm, y] = dateStr.split("-");
-    return `${dd}/${mm}/${y}`;
+    const [dd, mm, y] = dateStr.split(".");
+    // return `${dd}/${mm}/${y}`;
+    return `${mm}/${dd}/${y}`;
   }
 
   const startFormatted = format(start);
@@ -328,4 +330,8 @@ function fRemoveBtnById(sSection, sId){
   fOnBtnClick(btnFirst, btns[sSection][0])
 }
 
-
+function fTextAreaClear() {
+  const textArea = document.getElementById("searchedText");
+  textArea.value = "";
+  textArea.focus();
+}
