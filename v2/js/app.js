@@ -512,7 +512,7 @@ async function runEngineQuery(sDevice, sEngine) {
     // translate query back to source language for search if needed
     sSourceLng = dctCurrentVals.sLang || sSourceLng || dctDefaultForm.sLang
     let sQueryText = dctCurrentVals.sText
-    if (sQueryText &&!dctCurrentVals['sText-'+sTargetLng] && sTargetLng && sSourceLng && sSourceLng !== 'xx') {
+    if (sQueryText &&!dctCurrentVals['sText-'+sTargetLng] && sTargetLng && sTargetLng !== sSourceLng && sSourceLng !== 'xx') {
         try {
             let sQueryTranslText = await translateText(sQueryText, sSourceLng, sTargetLng)
             let sMsg = 'Text byl přeložen z ' + sSourceLng.toUpperCase() + ' do ' + sTargetLng.toUpperCase() + '. Pokud je třeba, překlad oprav.'
