@@ -528,6 +528,7 @@ async function runEngineQuery(sDevice, sEngine) {
         sTargetLng = lxdSelected[2].sParamLr.replace('lang_','').replace(',','') || 'en'
     }
     // translate query back to source language for search if needed
+    sSourceLng = dctCurrentVals.sLang || sSourceLng || dctDefaultForm.sLang
     let sQueryText = dctCurrentVals.sText
     if (sQueryText &&!dctCurrentVals['sText-'+sTargetLng] && sTargetLng && sSourceLng && sSourceLng !== 'xx') {
         try {

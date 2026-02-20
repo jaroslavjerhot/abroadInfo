@@ -492,13 +492,19 @@ async function showMediaDialog(dct) {
     
     dialog.appendChild(filterRow.div);
     dialog.appendChild(nameRow.div);
+
+    function fixDomain(str) {
+      return str.replace(/\.\s*([A-Za-z]+)/, (match, tld) => {
+        return "." + tld.toLowerCase();
+      });
+    }
     
     // Update name automatically
     filterRow.input.addEventListener("blur", () => {
       const filter = filterRow.input.value.trim();
       if (filter && !nameRow.input.value.trim()) {
         filterRow.input.value = filter.replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.').toLowerCase(); // simple heuristic for name
-        nameRow.input.value = filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.'); // simple heuristic for name
+        nameRow.input.value = fixDomain(filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', '')); // simple heuristic for name
       }
     });
         

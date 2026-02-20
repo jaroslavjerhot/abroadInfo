@@ -161,6 +161,9 @@ function convertGoogleDatesToDuck(str) {
 }
 
 function convertGoogleTbsToDuck(sTbs) {
+    if (!sTbs.includes('cd_min')) sTbs = sTbs.replace('cdr:1', 'cdr:1,cd_min:1/1/1990')
+    if (!sTbs.includes('cd_max')) sTbs += ',cd_max:' + new Date().toLocaleDateString('en-US');
+
     let sDf = sTbs
     sDf = convertGoogleDatesToDuck(sDf);
 
