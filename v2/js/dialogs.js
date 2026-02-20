@@ -64,7 +64,7 @@ function showInput(message, title = "Enter value", defaultValue = "") {
         <br>
 
         <div style="text-align:right;margin-top:20px;">
-          <button value='Zruš' class="btn btn-outline-secondary">Zavři</button>
+          <button value='close' class="btn btn-outline-secondary">Nepřekládat</button>
           <button value="ok" class="btn btn-success">OK</button>
         </div>
       </form>
@@ -505,19 +505,22 @@ async function showMediaDialog(dct) {
     dialog.appendChild(nameRow.div);
 
     function fixDomain(str) {
-      return str.replace(/\.\s*([A-Za-z]+)/, (match, tld) => {
-        return "." + tld.toLowerCase();
-      });
+      return str
+        .trim()
+        .replaceAll('. ','.') // remove spaces after dots
+        .replace(/^https?:\/\//i, "")  // remove http:// or https://
+        .replace(/^www\./i, "")        // remove www.
+        .replace(/\/+$/, "");          // remove slash(es) at end only
     }
     
     // Update name automatically
     filterRow.input.addEventListener("blur", () => {
       const filter = filterRow.input.value.trim();
-      if (filter && !nameRow.input.value.trim()) {
-        filterRow.input.value = filter.replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.').toLowerCase(); // simple heuristic for name
-        nameRow.input.value = fixDomain(filter.split(',')[0].replace('https://', '').replace('http://', '').replace('www.', '')); // simple heuristic for name
-      }
-    });
+      if (filter) {
+        //filterRow.input.value = filter.toLowerCase().replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.').replace('/,',',');
+        filterRow.input.value = filter.split(',').map(fixDomain).join(', ').toLowerCase(); // fix each domain in the list
+        nameRow.input.value = fixDomain(filter.split(',')[0])
+      }});
         
 
     // Buttons

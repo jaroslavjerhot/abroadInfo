@@ -206,6 +206,7 @@ function splitSearchTokens(csv, bPure=false) {
 
     const isDomain = clean.includes('.') && !clean.startsWith('/') 
     clean = clean.replace(/^\/+|\/+$/g, '');
+    if (isDomain) clean = clean.toLowerCase().replace('https://', '').replace('http://', '').replace('www.', '').replace('. ', '.')
     
 
     if (isDomain && !isMinus) sitePlus.push(clean);
@@ -217,8 +218,8 @@ function splitSearchTokens(csv, bPure=false) {
   let sDescr = '';
   if (sitePlus.length > 0) sDescr += sitePlus.join(', ') + ', ';
   if (siteMinus.length > 0) sDescr += ' -' + siteMinus.join(', -') + ', ';
-  if (inUrlPlus.length > 0) sDescr += inUrlPlus.join(', ') + ', ';
-  if (inUrlMinus.length > 0) sDescr += ' -' + inUrlMinus.join(', -') + ', ';
+  if (inUrlPlus.length > 0) sDescr += '/' + inUrlPlus.join(', /') + ', ';
+  if (inUrlMinus.length > 0) sDescr += ' -' + inUrlMinus.join(', -/') + ', ';
   sDescr = sDescr.slice(0, -2) // remove trailing comma and space
 
   if (sitePlus.length + siteMinus.length + inUrlPlus.length + inUrlMinus.length === 0) {

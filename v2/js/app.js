@@ -26,7 +26,8 @@ const dctDefaultForm = {
 //let dctTrans = {}; // translation cache
 let dctUrlParams = {}
 let sSourceLng = ''
-
+const radioTranslLng = document.querySelectorAll('input[name="translLng"]');
+    
 //dctTrans[dctDefaultForm.sLang] = searchedText.value.trim(); // reset default language
 // nastaví se radio lng a search URL query nebo podle local storage nebo podle defaultu
 
@@ -45,14 +46,13 @@ function getInitialValues() {
     searchedText.setAttribute("lang", radioStored.value);
     }
 
-    const radioTranslLng = document.querySelectorAll('input[name="translLng"]');
     radioTranslLng.forEach(radio => {
     radio.addEventListener("change", function () {
         if (this.checked) {
-        searchedText.setAttribute("lang", this.value);
-        dctCurrentVals.sLang = this.value;
-        const json = JSON.stringify(dctCurrentVals)
-        localStorage.setItem('currentVals', json);
+            searchedText.setAttribute("lang", this.value);
+            dctCurrentVals.sLang = this.value;
+            const json = JSON.stringify(dctCurrentVals)
+            localStorage.setItem('currentVals', json);
 
         }
     });
@@ -205,8 +205,22 @@ function fModifyButtons(lxd) {
                 dct.sInUrlMinus = dct.sInUrlMinus.replaceAll(': ', ':') // remove space after colon if exists
                 //dct.sParams += dct.sInUrlMinus
             }
+
+            function fDateAgo(sDaysAgo){
+                const match = sDaysAgo.match(/daysAgo\(\s*(\d+)\s*\)/g);
+                let iDaysAgo =  match ? parseInt(match[1], 10) : null;
+                if (!iDaysAgo) return null
+                
+                const date = new Date();
+                date.setDate(date.getDate() - iDaysAgo);
+                return formatGoogleDate(date)
+            }
             if (dct.sParamTbs) {
                 dct.sParamTbs = dct.sParamTbs.replace('currentYear-3', new Date().getFullYear()-3)
+                if (dct.sParamTbs.includes('daysAgo')){
+                    const sDate = fDateAgo(dct.sParamTbs)
+                    dct.sParamTbs = dct.sParamTbs.replace(/daysAgo\(\s*(\d+)\s*\)/g, sDate)
+                }
                 if (dct.sParamTbs.includes('last')){
                     const lastMon = getLastWeekDay(1) // get last Monday
                     dct.sParamTbs = dct.sParamTbs.replace('lastMon', formatGoogleDate(lastMon))
@@ -427,39 +441,7 @@ function setSearchTypeFromStorage_smaz() {
 /* ===============================
    SEARCH LOGIC
 ================================ */
-async function runSearch_smazat(sDevice = 'desktop') {
-    const text = searchedText.value.trim()
-    if(!text) return
-    
-    if (text !== dctTrans[dctDefaultForm.sLang]) {
-        dctTrans = {}  // clear dictionary
-        dctTrans[dctDefaultForm.sLang] = text
-        document.title = sTitlePrefix + text;
-    }
-    
-    const sSrcLang = document.querySelector('input[name="translLng"]:checked').value
-    
-    dctCurrent.sSrcLang = sSrcLang
-    if (sSrcLang!='xx') dctTrans[dctCurrent.sSrcLang] = text
-    dctCurrent.sTargetLang = btns.btnCountry.find(d => d.sId === dctCurrent.btnCountry).sParamLr
-    dctCurrent.sTargetLang = dctCurrent.sTargetLang.replace('lang_','').replace(',','')
-    //const lang = dctCountryConfig[selectedCountry].lang
-    //alert('Searching for: ' + text + '\nLanguage: ' + lang)
-    if (!(dctCurrent.sTargetLang in dctTrans)  && sSrcLang!='xx') {
-        try {
-            const translated = await translateText(text, dctCurrent.sSrcLang, dctCurrent.sTargetLang);
-            // Prompt the user to edit/confirm the search query
-            let finalText = prompt('Uprav do ' + dctCurrent.sTargetLang.toUpperCase() + ' přeložený text, pokud je třeba:', translated);
-            if (!finalText) return;
-            dctTrans[dctCurrent.sTargetLang] = finalText;
-            runEngineQuery(finalText, sDevice)
-        } catch {
-            runEngineQuery(searchedText.value.trim(), sDevice)
-        }
-    } else {
-        runEngineQuery(searchedText.value.trim(), sDevice)
-    }
-}
+
 
 async function translateText(text, src, target) {
     //if(lang === dctDefaultForm.sLang) return text
@@ -532,17 +514,23 @@ async function runEngineQuery(sDevice, sEngine) {
     let sQueryText = dctCurrentVals.sText
     if (sQueryText &&!dctCurrentVals['sText-'+sTargetLng] && sTargetLng && sSourceLng && sSourceLng !== 'xx') {
         try {
-            sQueryText = await translateText(sQueryText, sSourceLng, sTargetLng)
-            sQueryText = await showInput('Uprav do ' + sTargetLng.toUpperCase() + ' přeložený text, pokud je třeba:','', sQueryText)
-            if (!sQueryText) return;
-            dctCurrentVals['sText-'+sTargetLng] = sQueryText
-            const json = JSON.stringify(dctCurrentVals)
-            localStorage.setItem('currentVals', json);
+            let sQueryTranslText = await translateText(sQueryText, sSourceLng, sTargetLng)
+            let sMsg = 'Text byl přeložen z ' + sSourceLng.toUpperCase() + ' do ' + sTargetLng.toUpperCase() + '. Pokud je třeba, překlad oprav.'
+            if (dctMerged.sSitePlus + dctMerged.sInUrlPlus) {
+                sMsg += '<br><br>Pozor, vyhledávání má nastavené omezení na:<br><b>' + lxdSelected[2].sOuterDescr + '</b>'
+            }
+            sQueryTranslText = await showInput(sMsg, '', sQueryTranslText)
+            if (sQueryTranslText) {
+                sQueryText = sQueryTranslText;
+                dctCurrentVals['sText-'+sTargetLng] = sQueryText
+                const json = JSON.stringify(dctCurrentVals)
+                localStorage.setItem('currentVals', json);
+            }
         } catch (e) {
             console.error(e)
         }
     } else {
-        sQueryText = dctCurrentVals['sText-'+dctCurrent.sTargetLng] || sQueryText
+        sQueryText = dctCurrentVals['sText-' + sTargetLng] || sQueryText
     }
     let sUrl = ''
     if (dctMerged.sSearchEngine) {
@@ -550,7 +538,8 @@ async function runEngineQuery(sDevice, sEngine) {
         sUrl = dctMerged.sSearchEngine.replace('#', encodeURIComponent(sQueryText))
     } else {
         dctMerged.sSearchEngine = 'https://www.google.com/search?q=#'
-        sQueryText = dctMerged.sSitePlus + ' ' + dctMerged.sSiteMinus + ' ' + dctMerged.sInUrlPlus + ' ' + dctMerged.sInUrlMinus + ' ' +
+        const sOR = (dctMerged.sSitePlus && dctMerged.sInUrlPlus) ? ' OR ' : ' '
+        sQueryText = dctMerged.sSitePlus + sOR + dctMerged.sInUrlPlus + ' ' + dctMerged.sSiteMinus + ' ' + dctMerged.sInUrlMinus + ' ' +
             dctMerged.sQueryPrefix + ' ' + sQueryText + ' ' + dctMerged.sQuerySuffix
 
             
