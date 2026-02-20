@@ -207,8 +207,9 @@ function fModifyButtons(lxd) {
             }
 
             function fDateAgo(sDaysAgo){
-                const match = sDaysAgo.match(/daysAgo\(\s*(\d+)\s*\)/g);
-                let iDaysAgo =  match ? parseInt(match[1], 10) : null;
+                //const match = sDaysAgo.match(/daysAgo\(\s*(\d+)\s*\)/g);
+                const iDaysAgo = +sDaysAgo.split('(')[1].split(')')[0].trim()
+                // let iDaysAgo =  +sDaysAgo.replace('cdr:1,cd_min:daysAgo(', '').replace(')', '').trim();
                 if (!iDaysAgo) return null
                 
                 const date = new Date();
@@ -217,9 +218,9 @@ function fModifyButtons(lxd) {
             }
             if (dct.sParamTbs) {
                 dct.sParamTbs = dct.sParamTbs.replace('currentYear-3', new Date().getFullYear()-3)
-                if (dct.sParamTbs.includes('daysAgo')){
+                if (dct.sParamTbs.includes('cdr:1,cd_min:daysAgo')){
                     const sDate = fDateAgo(dct.sParamTbs)
-                    dct.sParamTbs = dct.sParamTbs.replace(/daysAgo\(\s*(\d+)\s*\)/g, sDate)
+                    dct.sParamTbs = 'cdr:1,cd_min:' + sDate
                 }
                 if (dct.sParamTbs.includes('last')){
                     const lastMon = getLastWeekDay(1) // get last Monday
