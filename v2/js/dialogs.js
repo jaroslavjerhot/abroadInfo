@@ -489,6 +489,17 @@ async function showMediaDialog(dct) {
     // Inputs
     const filterRow = createInputRow("Doména nebo klíčové slovo", "text", dct.sOuterDescr || "");
     const nameRow = createInputRow("Název filtru", "text", dct.sLabel);
+    nameRow.setAttribute("lang", "en");
+    nameRow.input.setAttribute("autocapitalize", "none");
+    nameRow.input.setAttribute("autocomplete", "off");
+    nameRow.input.setAttribute("autocorrect", "off");
+    nameRow.input.setAttribute("spellcheck", "false");
+
+    filterRow.setAttribute("lang", "en");
+    filterRow.input.setAttribute("autocapitalize", "none");
+    filterRow.input.setAttribute("autocomplete", "off");
+    filterRow.input.setAttribute("autocorrect", "off");
+    filterRow.input.setAttribute("spellcheck", "false");
     
     dialog.appendChild(filterRow.div);
     dialog.appendChild(nameRow.div);
