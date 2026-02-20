@@ -9,6 +9,7 @@ btnTime;btn;last_d;posl. 24h;;google;;;;;;;;;;qdr:d;;;;;;
 btnTime;btn;last_w;posl. 7 dní;;google;;;;;;;;;;qdr:w;;;;;;
 btnTime;btn;for_quiz;minulý týden;;google;;;;;;;;;;cdr:1,cd_min:lastMon,cd_max:lastSun;;;;;;
 btnTime;btn;last_m;posl. 31 dní;;google;;;;;;;;;;qdr:m;;;;;;
+btnTime;btn;last_q;posl. 91 dní;;google;;;;;;;;;;cdr:1,cd_min:daysAgo(91);;;;;;
 btnTime;btn;last_y;posl. 365 dní;;google;;;;;;;;;;qdr:y;;;;;;
 btnTime;btn;last_3y;posl. 3roky;;google;;;;;;;;;;cdr:1,cd_min:1/1/currentYear-3;;;;;;
 btnTime;btn;modifyTime;Uprav;;;;;;;;;;;;;;;;modifyTimeBtns;;
