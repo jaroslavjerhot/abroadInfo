@@ -1,6 +1,6 @@
 const sButtonsListUrl = 'https://raw.githubusercontent.com/jaroslavjerhot/abroadInfo/main/v2/data/buttonsList.csv'
 const sMediaListUrl = 'https://raw.githubusercontent.com/jaroslavjerhot/abroadInfo/main/data/mediaList.csv'
-const sCountryListUrl = 'https://raw.githubusercontent.com/jaroslavjerhot/abroadInfo/main/data/v2/countryList.csv'
+const sCountryListUrl = 'https://raw.githubusercontent.com/jaroslavjerhot/abroadInfo/main/data/countryList.csv'
 
 async function fLoadCsv(url) {
     url = url || sButtonsListUrl
