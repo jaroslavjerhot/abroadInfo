@@ -218,6 +218,16 @@ function fModifyButtons(lxd) {
             }
             if (dct.sParamTbs) {
                 dct.sParamTbs = dct.sParamTbs.replace('currentYear-3', new Date().getFullYear()-3)
+                if (dct.sParamTbs.includes('daysAgo')){
+                    let lst = dct.sParamTbs.split(',')
+                    lst = lst.map(s => {
+                        if (s.includes('daysAgo')) {
+                            return s.slice(0, s.indexOf('daysAgo')) + fDateAgo(s)
+                        }
+                        return s
+                    })
+                    dct.sParamTbs = lst.join(',')
+                }
                 if (dct.sParamTbs.includes('cdr:1,cd_min:daysAgo')){
                     const sDate = fDateAgo(dct.sParamTbs)
                     dct.sParamTbs = 'cdr:1,cd_min:' + sDate
